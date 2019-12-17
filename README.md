@@ -54,7 +54,7 @@ touch ~/.okta_aws_login_config && \
 alias gimme-aws-creds="docker run -it --rm \
   -v ~/.aws/credentials:/root/.aws/credentials \
   -v ~/.okta_aws_login_config:/root/.okta_aws_login_config \
-  gimme-aws-creds"
+  rewardinsight/gimme-aws-creds"
 ```
 With this config, you will be able to run further commands seamlessly!
 
