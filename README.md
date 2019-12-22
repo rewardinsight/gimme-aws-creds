@@ -1,5 +1,8 @@
 # Gimme AWS Creds
 
+
+# Forked from Nike-Inc/gimme-aws-creds...updated README
+
 [![][license img]][license]
 [![Build Status](https://travis-ci.org/Nike-Inc/gimme-aws-creds.svg?branch=master)](https://travis-ci.org/Nike-Inc/gimme-aws-creds)
 
@@ -22,16 +25,10 @@ Python 3
 ## Installation
 This is a Python 3 project.
 
-Install/Upgrade from PyPi:
-```bash
-pip3 install --upgrade gimme-aws-creds
-```
-
-__OR__
 
 Install/Upgrade the latest gimme-aws-creds package direct from GitHub:
 ```bash
-pip3 install --upgrade git+git://github.com/Nike-Inc/gimme-aws-creds.git
+pip3 install --upgrade git+git://github.com/rewardinsight/gimme-aws-creds.git
 ```
 
 __OR__
@@ -49,7 +46,7 @@ docker build -t gimme-aws-creds .
 ```
 To make it easier you can also create an alias for the gimme-aws-creds command with docker:
 ```bash
-# make sure you have the "~/.okta_aws_login_config" locally first!
+# make sure you have the "~/.okta_aws_login_config" locally first...docker will create a directory instead of a file if
 touch ~/.okta_aws_login_config && \
 alias gimme-aws-creds="docker run -it --rm \
   -v ~/.aws/credentials:/root/.aws/credentials \
