@@ -1,7 +1,7 @@
 # Gimme AWS Creds
 
 
-# Forked from Nike-Inc/gimme-aws-creds...updated README
+## Forked from Nike-Inc/gimme-aws-creds...
 
 [![][license img]][license]
 [![Build Status](https://travis-ci.org/Nike-Inc/gimme-aws-creds.svg?branch=master)](https://travis-ci.org/Nike-Inc/gimme-aws-creds)
