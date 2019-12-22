@@ -10,6 +10,7 @@ from nose.tools import assert_equals
 from contextlib import contextmanager
 from io import StringIO
 
+from gimme_aws_creds import errors, ui
 from gimme_aws_creds.okta import OktaClient
 
 
@@ -111,6 +112,26 @@ class TestOktaClient(unittest.TestCase):
                 }
             }
 
+        self.hardware_factor = {
+                'id': 'ykfb7c5ujftQeL9B51t9',
+                'factorType': 'token:hardware',
+                'provider': 'YUBICO',
+                'vendorName': 'YUBICO',
+                'profile': {
+                    'credentialId': '000009884014'
+                 },
+                '_links': {
+                    'verify': {
+                        'href': 'https://datto.okta.com/api/v1/authn/factors/ykfb0c5ujftWeL9X51t7/verify',
+                        'hints': {
+                            'allow': [
+                                'POST'
+                            ]
+                        }
+                    }
+                }
+            }
+
         self.unknown_factor = {
                 "id": "ost9ei4toqQBAzXmw0h7",
                 "factorType": "UNKNOWN_FACTOR",
@@ -153,7 +174,7 @@ class TestOktaClient(unittest.TestCase):
         self.factor_list = [self.sms_factor, self.push_factor, self.totp_factor]
 
     def setUp_client(self, okta_org_url, verify_ssl_certs):
-        client = OktaClient(okta_org_url, verify_ssl_certs)
+        client = OktaClient(ui.default, okta_org_url, verify_ssl_certs)
         client.req_session = requests
         return client
 
@@ -234,14 +255,14 @@ class TestOktaClient(unittest.TestCase):
 #    @patch('builtins.input', return_value='ann')
 #    def test_bad_username(self, mock_pass, mock_input):
 #        """Test that initial authentication works with Okta"""
-#        with self.assertRaises(SystemExit):
+#        with self.assertRaises(errors.GimmeAWSCredsExitBase):
 #            self.client._get_username_password_creds()
 
     @patch('getpass.getpass', return_value='')
     @patch('builtins.input', return_value='ann@example.com')
     def test_missing_password(self, mock_pass, mock_input):
         """Test that initial authentication works with Okta"""
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(errors.GimmeAWSCredsExitBase):
             self.client._get_username_password_creds()
 
     @responses.activate
@@ -694,7 +715,7 @@ class TestOktaClient(unittest.TestCase):
     @patch('builtins.input', return_value='12')
     def test_choose_bad_factor_totp(self, mock_input):
         """ Test selecting an invalid MFA factor"""
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(errors.GimmeAWSCredsExitBase):
             result = self.client._choose_factor(self.factor_list)
 
     def test_build_factor_name_sms(self):
@@ -711,6 +732,11 @@ class TestOktaClient(unittest.TestCase):
         """ Test building a display name for TOTP"""
         result = self.client._build_factor_name(self.totp_factor)
         assert_equals(result, "token:software:totp( OKTA ) : jane.doe@example.com")
+
+    def test_build_factor_name_hardware(self):
+        """ Test building a display name for hardware"""
+        result = self.client._build_factor_name(self.hardware_factor)
+        assert_equals(result, "token:hardware: YUBICO")
 
     def test_build_factor_name_unknown(self):
         """ Handle an unknown MFA factor"""
